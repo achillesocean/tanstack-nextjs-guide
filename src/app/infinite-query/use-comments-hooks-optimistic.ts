@@ -16,9 +16,13 @@ export function useCreateCommentMutationOptimistic() {
   return useMutation({
     mutationFn: (newComment: { text: string }) =>
       postData<{ comment: Comment }>("/api/comments", newComment),
+
+    // Handle optimistic updates
     onMutate: async (newCommentData) => {
+      // Cancel any outgoing refetches to avoid them overwriting our optimistic update
       await queryClient.cancelQueries({ queryKey });
 
+      // Snapshot the previous value for rollback in case of error
       const previousData =
         queryClient.getQueryData<
           InfiniteData<CommentsResponse, number | undefined>
@@ -27,6 +31,7 @@ export function useCreateCommentMutationOptimistic() {
       const optimisticComment: Comment = {
         id: Date.now(),
         text: newCommentData.text,
+        // In a real app, user data would come from your auth provider
         user: {
           name: "Current User",
           avatar: "CU",
@@ -34,6 +39,7 @@ export function useCreateCommentMutationOptimistic() {
         createdAt: new Date().toISOString(),
       };
 
+      // Update the cache with our optimistic comment
       queryClient.setQueryData<
         InfiniteData<CommentsResponse, number | undefined>
       >(queryKey, (oldData) => {
@@ -54,9 +60,11 @@ export function useCreateCommentMutationOptimistic() {
         }
       });
 
+      // Return the previous data for the onError handler
       return { previousData };
     },
 
+    // If the mutation fails, roll back to the previous state
     onError(error, variables, context) {
       queryClient.setQueryData(queryKey, context?.previousData);
     },

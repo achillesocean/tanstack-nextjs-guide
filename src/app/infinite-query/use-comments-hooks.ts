@@ -30,11 +30,14 @@ export function useCreateCommentMutation() {
     mutationFn: (newComment: { text: string }) =>
       postData<{ comment: Comment }>("/api/comments", newComment),
     onSuccess: async ({ comment }) => {
+      // Cancel any outgoing refetches to avoid them overwriting our optimistic update
       await queryClient.cancelQueries({ queryKey });
 
+      // Update the query cache with the new comment so we don't have to wait for the refetch
       queryClient.setQueryData<
         InfiniteData<CommentsResponse, number | undefined>
       >(queryKey, (oldData) => {
+        // Add the new comment to the first page of results
         const firstPage = oldData?.pages[0];
 
         if (firstPage) {
@@ -52,5 +55,7 @@ export function useCreateCommentMutation() {
         }
       });
     },
+
+    // You can still invalidate the query afterwards but it's not really necessary
   });
 }

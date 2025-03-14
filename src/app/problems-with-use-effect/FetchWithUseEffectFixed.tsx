@@ -7,11 +7,13 @@ export default function FetchWithUseEffectFixed({
 }: {
   category: string;
 }) {
+  // Using undefined as initial state to distinguish between "no data yet" and "empty result"
   const [posts, setPosts] = useState<Post[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>();
 
   useEffect(() => {
+    // Fix race conditions with ignore flag
     let ignore = false;
 
     setIsLoading(true);
@@ -20,8 +22,10 @@ export default function FetchWithUseEffectFixed({
       try {
         const data = await fetchData<Post[]>(`/api/posts?category=${category}`);
 
+        // Only update state if this request is still relevant
         if (!ignore) {
           setPosts(data);
+          // Don't forget to reset your states
           setError(undefined);
         }
       } catch (error) {

@@ -12,6 +12,7 @@ export default function InfiniteComments() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    // For organization, you can put your queries into custom hooks
   } = useCommentsQuery();
 
   const comments = data?.pages.flatMap((page) => page.comments);
