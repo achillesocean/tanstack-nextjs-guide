@@ -1,4 +1,3 @@
-// Comment type definition
 export type Comment = {
   id: number;
   user: {
