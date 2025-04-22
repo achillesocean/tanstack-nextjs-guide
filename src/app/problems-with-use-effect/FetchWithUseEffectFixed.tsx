@@ -46,7 +46,7 @@ export default function FetchWithUseEffectFixed({
     return () => {
       ignore = true;
     };
-  }, [category]);
+  }, [category]); // explain with mentions of js closure, useEffect instances running in paralles thus not interfere with each other
 
   return (
     <div className="p-4">

@@ -11,12 +11,12 @@ export async function GET(request: Request) {
   await new Promise((resolve) => setTimeout(resolve, delay));
 
   // Randomly throw an error (10% chance)
-  if (Math.random() < 0.1) {
-    return NextResponse.json(
-      { error: "Failed to fetch posts" },
-      { status: 500 }
-    );
-  }
+  // if (Math.random() < 0.1) {
+  //   return NextResponse.json(
+  //     { error: "Failed to fetch posts" },
+  //     { status: 500 }
+  //   );
+  // }
 
   // Return the posts for the requested category
   if (category in posts) {

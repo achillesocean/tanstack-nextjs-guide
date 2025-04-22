@@ -2,17 +2,19 @@ import { fetchData } from "@/lib/fetch-utils";
 import { useQuery } from "@tanstack/react-query";
 import { Post } from "../api/posts/data";
 
+// this is the component where you use react query
 export default function FetchWithReactQuery({
   category,
 }: {
   category: string;
 }) {
   const {
-    data: posts,
+    data: posts, // renaming data to posts. javascript or typescript?
     isLoading,
     isError,
     error,
   } = useQuery({
+    // we leave out the type of return because query can infer from the queryFn
     queryKey: ["posts", category],
     queryFn: () => fetchData<Post[]>(`/api/posts?category=${category}`),
   });

@@ -16,6 +16,7 @@ export function CommentForm() {
 
     if (!commentText.trim()) return;
 
+    // you pass the parameters to the mutationFn into the mutate function below.
     mutation.mutate(
       { text: commentText },
       {

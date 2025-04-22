@@ -17,7 +17,8 @@ export function useCreateCommentMutationOptimistic() {
     mutationFn: (newComment: { text: string }) =>
       postData<{ comment: Comment }>("/api/comments", newComment),
 
-    // Handle optimistic updates
+    // Handle optimistic updates. executed before getting response back
+    // the data it gets and can be destructured the one being sent for mutation
     onMutate: async (newCommentData) => {
       // Cancel any outgoing refetches to avoid them overwriting our optimistic update
       await queryClient.cancelQueries({ queryKey });
@@ -28,6 +29,7 @@ export function useCreateCommentMutationOptimistic() {
           InfiniteData<CommentsResponse, number | undefined>
         >(queryKey);
 
+      // if you weren't working with Next, how would you be able to get these types, like Comment that are meant to be on the backend, and we're importing them from the backend here in Next too.
       const optimisticComment: Comment = {
         id: Date.now(),
         text: newCommentData.text,
